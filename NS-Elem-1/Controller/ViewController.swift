@@ -59,7 +59,6 @@ class ViewController: UIViewController {
         randomNumC = Int.random(in: 100 ..< 1001)
         
         questionLabel.text = "\(randomNumA) + \(randomNumB) + \(randomNumC)"
-        readMe(myText: "What is \(randomNumA) plus \(randomNumB) plus \(randomNumC)?")
     }
     
     func checkAnswer(){
