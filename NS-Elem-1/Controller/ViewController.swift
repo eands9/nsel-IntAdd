@@ -4,7 +4,7 @@
 //
 //  Created by Eric Hernandez on 12/2/18.
 //  Copyright © 2018 Eric Hernandez. All rights reserved.
-//
+// once the user presses the check button, it should print out the number of questions they have done in the debug console
 
 import UIKit
 import Speech
@@ -22,11 +22,9 @@ class ViewController: UIViewController {
     var numberAttempts: Int = 0
     var timer = Timer()
     var counter = 0.0
-    
     var randomNumA : Int = 0
     var randomNumB : Int = 0
     var randomNumC : Int = 0
-    
     var firstNum : Int = 0
     var secondNum : Int = 0
     var thirdNum : Int = 0
@@ -34,8 +32,8 @@ class ViewController: UIViewController {
     var answerCorrect : Int = 0
     var answerUser : Int = 0
     
-    let congratulateArray = ["Great Job", "Excellent", "Way to go", "Alright", "Right on", "Correct", "Well done", "Awesome","Give me a high five"]
-    let retryArray = ["Try again","Oooops"]
+    let congratulateArray = ["Great Job", "Excellent", "Way to go", "Alright", "Right on", "Correct", "Well done", "Awesome","Give me a high five", "You are so smart"]
+    let retryArray = ["Don't worry, you will get the answer on the next try.","Oooops", "Try again"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,6 +57,7 @@ class ViewController: UIViewController {
         randomNumC = Int.random(in: 100 ..< 1001)
         
         questionLabel.text = "\(randomNumA) + \(randomNumB) + \(randomNumC)"
+    
     }
     
     func checkAnswer(){
@@ -101,7 +100,7 @@ class ViewController: UIViewController {
     }
     
     func randomPositiveFeedback(){
-        randomPick = Int(arc4random_uniform(9))
+        randomPick = Int(arc4random_uniform(10))
         readMe(myText: congratulateArray[randomPick])
     }
     
@@ -110,7 +109,7 @@ class ViewController: UIViewController {
     }
     
     func randomTryAgain(){
-        randomPick = Int(arc4random_uniform(2))
+        randomPick = Int(arc4random_uniform(3))
         readMe(myText: retryArray[randomPick])
     }
 }
