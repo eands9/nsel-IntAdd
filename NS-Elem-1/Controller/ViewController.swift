@@ -31,9 +31,11 @@ class ViewController: UIViewController {
     var questionTxt : String = ""
     var answerCorrect : Int = 0
     var answerUser : Int = 0
+    var questionNumber = 0
+    var averageSecond = 0
     
     let congratulateArray = ["Great Job", "Excellent", "Way to go", "Alright", "Right on", "Correct", "Well done", "Awesome","Give me a high five", "You are so smart"]
-    let retryArray = ["Don't worry, you will get the answer on the next try.","Oooops", "Try again"]
+    let retryArray = ["Oooops", "Try again"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,13 +53,25 @@ class ViewController: UIViewController {
     }
     
     func askQuestion(){
+        //TODO: Stop the timer when the user is done with the 2nd question.
+        if questionNumber == 2{
+            timer.invalidate()
+            stopTimer()
+        }
+        
         //3 digit questions starting at 100
-        randomNumA = Int.random(in: 100 ..< 1001)
-        randomNumB = Int.random(in: 100 ..< 1001)
-        randomNumC = Int.random(in: 100 ..< 1001)
+        //randomNumA = Int.random(in: 100 ..< 1001)
+        //randomNumB = Int.random(in: 100 ..< 1001)
+        //randomNumC = Int.random(in: 100 ..< 1001)
+        
+        randomNumA = Int.random(in: 1 ..< 10)
+        randomNumB = Int.random(in: 1 ..< 10)
+        randomNumC = Int.random(in: 1 ..< 10)
         
         questionLabel.text = "\(randomNumA) + \(randomNumB) + \(randomNumC)"
+        questionNumber += 1
     
+
     }
     
     func checkAnswer(){
@@ -109,8 +123,17 @@ class ViewController: UIViewController {
     }
     
     func randomTryAgain(){
-        randomPick = Int(arc4random_uniform(3))
+        randomPick = Int(arc4random_uniform(2))
         readMe(myText: retryArray[randomPick])
+    }
+    
+    func stopTimer(){
+        timer.invalidate()
     }
 }
 
+ //Create a func called calculate average.
+
+func calculateAverage(){
+    
+}
