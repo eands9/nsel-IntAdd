@@ -53,25 +53,52 @@ class ViewController: UIViewController {
     }
     
     func askQuestion(){
-        //TODO: Stop the timer when the user is done with the 2nd question.
-        if questionNumber == 2{
+        //TODO: Stop the timer when the user is done with the 5th question.
+        if questionNumber == 5{
+            averageSecond = Int(counter)/questionNumber
+            questionLabel.text = "Your average time is \(averageSecond) seconds."
             timer.invalidate()
             stopTimer()
+            
+            if averageSecond >= 8 {
+                let alert = UIAlertController(title: "Redo!", message: "You did not finish in less than 8 seconds!", preferredStyle: .alert)
+                let restartAction = UIAlertAction(title: "Start Over", style: .default) { (handler) in
+                    self.startOver()
+                }
+                alert.addAction(restartAction)
+                present(alert, animated: true, completion: nil)
+            } else {
+                let when = DispatchTime.now() + 2
+                DispatchQueue.main.asyncAfter(deadline: when){
+                    self.readMe(myText: "Congratulations! Your average time is \(self.averageSecond) seconds.")
+                    self.questionLabel.text = "Congratulations! Your average time is \(self.averageSecond) seconds."
+                }
+            }
+
+            
         }
         
         //3 digit questions starting at 100
-        //randomNumA = Int.random(in: 100 ..< 1001)
-        //randomNumB = Int.random(in: 100 ..< 1001)
-        //randomNumC = Int.random(in: 100 ..< 1001)
-        
-        randomNumA = Int.random(in: 1 ..< 10)
-        randomNumB = Int.random(in: 1 ..< 10)
-        randomNumC = Int.random(in: 1 ..< 10)
+        randomNumA = Int.random(in: 100 ..< 1001)
+        randomNumB = Int.random(in: 100 ..< 1001)
+        randomNumC = Int.random(in: 100 ..< 1001)
         
         questionLabel.text = "\(randomNumA) + \(randomNumB) + \(randomNumC)"
         questionNumber += 1
     
 
+    }
+    func startOver(){
+        counter = 0
+        correctAnswers = 0
+        numberAttempts = 0
+        questionNumber = 0
+        askQuestion()
+        
+        timerLbl.text = "\(counter)"
+        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(ViewController.updateTimer), userInfo: nil, repeats: true)
+        
+        self.answerTxt.becomeFirstResponder()
     }
     
     func checkAnswer(){
