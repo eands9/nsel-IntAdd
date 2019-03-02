@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="buB-fS-8xx">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -18,7 +18,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Type username" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wlq-zJ-bCF">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Type username" borderStyle="roundedRect" textAlignment="center" clearsOnBeginEditing="YES" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="wlq-zJ-bCF">
                                 <rect key="frame" x="102" y="116" width="171" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="13U-8a-nqa"/>
@@ -49,6 +49,9 @@
                                 <state key="normal" title="Login">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
+                                <connections>
+                                    <action selector="loginBtn:" destination="buB-fS-8xx" eventType="touchUpInside" id="P5h-kJ-ctj"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.066653046339999994" green="0.25122072979999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -62,10 +65,15 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="WFe-Ey-Ftp"/>
                     </view>
+                    <connections>
+                        <outlet property="passwordTxt" destination="dvt-Ap-OEo" id="FKY-Bg-HXD"/>
+                        <outlet property="userNameTxt" destination="wlq-zJ-bCF" id="SNC-AW-emr"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="goToApp" id="icB-SY-4Jr"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ld2-cr-hO3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1041" y="65"/>
+            <point key="canvasLocation" x="-1414" y="63"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -184,7 +192,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-395" y="65"/>
+            <point key="canvasLocation" x="-244" y="64"/>
         </scene>
     </scenes>
 </document>

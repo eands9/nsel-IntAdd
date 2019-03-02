@@ -8,6 +8,7 @@
 
 import UIKit
 import Speech
+import Firebase
 
 class ViewController: UIViewController {
     @IBOutlet weak var questionLbl: UILabel!
@@ -54,9 +55,10 @@ class ViewController: UIViewController {
     
     func askQuestion(){
         //TODO: Stop the timer when the user is done with the 5th question.
-        if questionNumber == 5{
+        if correctAnswers == 5{
             averageSecond = Int(counter)/questionNumber
             questionLabel.text = "Your average time is \(averageSecond) seconds."
+            updateAvgTime()
             timer.invalidate()
             stopTimer()
             
@@ -157,10 +159,33 @@ class ViewController: UIViewController {
     func stopTimer(){
         timer.invalidate()
     }
-}
-
- //Create a func called calculate average.
-
-func calculateAverage(){
+    func updateAvgTime(){
+        let category = "1A1"
+        let userName = Auth.auth().currentUser?.email as! String
+        let modUserName1 = userName.replacingOccurrences(of: "@", with: "")
+        let modUsername2 = modUserName1.replacingOccurrences(of: ".", with: "")
+        let refUserNameDB = Database.database().reference().child("Users").child(modUsername2).child(category)
+        
+        
+        refUserNameDB.setValue(["AvgTime": averageSecond, "Date": getCurrentShortDate()]){
+            (error,reference) in
+            if error != nil{
+                print(error!)
+            } else {
+                print("Message saved successfully!")
+                
+            }
+        }
+    }
+    
+    func getCurrentShortDate() -> String {
+        let todaysDate = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let DateInFormat = dateFormatter.string(from: todaysDate)
+        
+        return DateInFormat
+    }
     
 }
+
