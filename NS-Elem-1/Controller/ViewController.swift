@@ -34,61 +34,112 @@ class ViewController: UIViewController {
     var answerUser : Int = 0
     var questionNumber = 0
     var averageSecond = 0
+    //MARK: - Add 3
+    var currentAvgTime = 0
+    var modUserName3 = ""
+    let category = "1A1"
     
     let congratulateArray = ["Great Job", "Excellent", "Way to go", "Alright", "Right on", "Correct", "Well done", "Awesome","Give me a high five", "You are so smart"]
     let retryArray = ["Oooops", "Try again"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        //MARK: - add getUserName
+        getUserName()
         askQuestion()
-        
+
         timerLbl.text = "\(counter)"
         timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(ViewController.updateTimer), userInfo: nil, repeats: true)
-        
+
         self.answerTxt.becomeFirstResponder()
     }
 
     @IBAction func checkAnswerByUser(_ sender: Any) {
         checkAnswer()
     }
-    
+    //MARK: - Get userName
+    func getUserName(){
+
+        let userName = Auth.auth().currentUser?.email as! String
+        let modUserName1 = userName.replacingOccurrences(of: "@", with: "")
+        let modUsername2 = modUserName1.replacingOccurrences(of: ".", with: "")
+        modUserName3 = modUsername2
+    }
     func askQuestion(){
         //TODO: Stop the timer when the user is done with the 5th question.
-        if correctAnswers == 5{
-            averageSecond = Int(counter)/questionNumber
-            questionLabel.text = "Your average time is \(averageSecond) seconds."
-            updateAvgTime()
+        
+        if correctAnswers == 2{
+            //MARK: - Replace questionNumber with correctAnswers
+            averageSecond = Int(counter)/correctAnswers
             timer.invalidate()
             stopTimer()
-            
-            if averageSecond >= 8 {
-                let alert = UIAlertController(title: "Redo!", message: "You did not finish in less than 8 seconds!", preferredStyle: .alert)
-                let restartAction = UIAlertAction(title: "Start Over", style: .default) { (handler) in
-                    self.startOver()
-                }
-                alert.addAction(restartAction)
-                present(alert, animated: true, completion: nil)
-            } else {
-                let when = DispatchTime.now() + 2
-                DispatchQueue.main.asyncAfter(deadline: when){
-                    self.readMe(myText: "Congratulations! Your average time is \(self.averageSecond) seconds.")
-                    self.questionLabel.text = "Congratulations! Your average time is \(self.averageSecond) seconds."
-                }
-            }
+            //MARK: - Replace updateAvgTime with getAvgTimeFromDB
+            compareTime()
 
-            
-        }
+        } else {
         
         //3 digit questions starting at 100
-        randomNumA = Int.random(in: 100 ..< 1001)
-        randomNumB = Int.random(in: 100 ..< 1001)
-        randomNumC = Int.random(in: 100 ..< 1001)
+//        randomNumA = Int.random(in: 100 ..< 1001)
+//        randomNumB = Int.random(in: 100 ..< 1001)
+//        randomNumC = Int.random(in: 100 ..< 1001)
         
+        randomNumA = Int.random(in: 1 ..< 11)
+        randomNumB = Int.random(in: 1 ..< 11)
+        randomNumC = Int.random(in: 1 ..< 11)
+            
         questionLabel.text = "\(randomNumA) + \(randomNumB) + \(randomNumC)"
         questionNumber += 1
-    
-
+        }
+    }
+    func failed(){
+        let alert = UIAlertController(title: "Redo!", message: "You could do better... try again!", preferredStyle: .alert)
+        let restartAction = UIAlertAction(title: "Start Over", style: .default) { (handler) in
+            self.startOver()
+        }
+        alert.addAction(restartAction)
+        present(alert, animated: true, completion: nil)
+    }
+    func breakNewRecord(){
+        let alert = UIAlertController(title: "Want to beat your new record!", message: "Come on... you can do it!", preferredStyle: .alert)
+        let restartAction = UIAlertAction(title: "Break My New Record", style: .default) { (handler) in
+            self.startOver()
+        }
+        alert.addAction(restartAction)
+        present(alert, animated: true, completion: nil)
+    }
+    func compareTime(){
+        //Get Previous Record
+        let refPrevRec = Database.database().reference().child("Users").child(modUserName3).child(category).child("AvgTime")
+        refPrevRec.observeSingleEvent(of: .value, with: {(snapshot) in
+            self.currentAvgTime = (snapshot.value as? Int)!
+            // Compare New Time with Previous Record Time
+            if self.averageSecond >= self.currentAvgTime{
+                self.questionLabel.text = "Nope! Your time of \(self.averageSecond) needs to be less than your record of \(self.currentAvgTime)."
+                self.readMe(myText: "Redo!")
+                self.failed()
+            } else {
+                self.updateDB()
+                self.questionLabel.text = "Yes! Your time of \(self.averageSecond) is better than your record of \(self.currentAvgTime)."
+                self.readMe(myText: "Record broken!")
+                self.breakNewRecord()
+            }
+        })
+        { (error) in
+            print(error.localizedDescription)
+        }
+    }
+    func updateDB(){
+        //MARK: - Fix
+        let refUserNameDB = Database.database().reference().child("Users").child(modUserName3).child(category)
+        refUserNameDB.setValue(["AvgTime": averageSecond, "Date": getCurrentShortDate()]){
+            (error,reference) in
+            if error != nil{
+                print(error!)
+            } else {
+                print("Message saved successfully!")
+                
+            }
+        }
     }
     func startOver(){
         counter = 0
@@ -158,24 +209,6 @@ class ViewController: UIViewController {
     
     func stopTimer(){
         timer.invalidate()
-    }
-    func updateAvgTime(){
-        let category = "1A1"
-        let userName = Auth.auth().currentUser?.email as! String
-        let modUserName1 = userName.replacingOccurrences(of: "@", with: "")
-        let modUsername2 = modUserName1.replacingOccurrences(of: ".", with: "")
-        let refUserNameDB = Database.database().reference().child("Users").child(modUsername2).child(category)
-        
-        
-        refUserNameDB.setValue(["AvgTime": averageSecond, "Date": getCurrentShortDate()]){
-            (error,reference) in
-            if error != nil{
-                print(error!)
-            } else {
-                print("Message saved successfully!")
-                
-            }
-        }
     }
     
     func getCurrentShortDate() -> String {
