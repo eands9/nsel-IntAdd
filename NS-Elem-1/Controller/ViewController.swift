@@ -37,15 +37,19 @@ class ViewController: UIViewController {
     //MARK: - Add 3
     var currentAvgTime = 0
     var modUserName3 = ""
+    var timerTouch = Timer()
     let category = "1A1"
+    var counterTouch = 0.0
     
     let congratulateArray = ["Great Job", "Excellent", "Way to go", "Alright", "Right on", "Correct", "Well done", "Awesome","Give me a high five", "You are so smart"]
     let retryArray = ["Oooops", "Try again"]
+    let getBackToWorkArray = ["You know what your dad wants to hear!","Your dad is waiting!","Don't get penalize","Life is a race","Who is winning the race?","Guess what Lucas and Tony are doing?","I will tell your dad","Remember the story of the Turtle and Rabbit","Don't forget to love yourself"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         //MARK: - add getUserName
         getUserName()
+        setImproperlyClosedToN()
         askQuestion()
 
         timerLbl.text = "\(counter)"
@@ -72,6 +76,7 @@ class ViewController: UIViewController {
             //MARK: - Replace questionNumber with correctAnswers
             averageSecond = Int(counter)/correctAnswers
             timer.invalidate()
+            timerTouch.invalidate()
             stopTimer()
             //MARK: - Replace updateAvgTime with getAvgTimeFromDB
             compareTime()
@@ -89,6 +94,7 @@ class ViewController: UIViewController {
             
         questionLabel.text = "\(randomNumA) + \(randomNumB) + \(randomNumC)"
         questionNumber += 1
+        startTimerTouch()
         }
     }
     func failed(){
@@ -141,6 +147,63 @@ class ViewController: UIViewController {
             }
         }
     }
+//    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        let touchCount = touches.count
+//        let touch = touches.first
+//        let tapCount = touch!.tapCount
+//
+//        //categoryTxt.text = "touchesEnded";
+//        //timeTxt.text = "\(touchCount) touches"
+//        //userNameTxt.text = "\(tapCount) taps"
+//        print("stopped touching")
+//
+//        startTimerTouch()
+//    }
+    func startTimerTouch(){
+        counterTouch = 0
+        //userNameTxt.text = "\(counter)"
+        timerTouch = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(ViewController.updateTimerTouch), userInfo: nil, repeats: true)
+    }
+    func stopTimerTouch(){
+        timerTouch.invalidate()
+    }
+    @objc func updateTimerTouch(){
+        counterTouch += 1
+        if counterTouch == 20{
+            randomBackToWork()
+            counterTouch = 0
+        }
+        
+    }
+    func randomBackToWork(){
+        let randomPickWork = Int(arc4random_uniform(8))
+        readMe(myText: getBackToWorkArray[randomPickWork])
+    }
+//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        let touchCount = touches.count
+//        let touch = touches.first
+//        let tapCount = touch!.tapCount
+//
+//       // categoryTxt.text = "touchesBegan"
+//        //timeTxt.text = "\(touchCount) touches"
+//        //userNameTxt.text = "\(tapCount) taps"
+//        print("start touching")
+//        stopTimerTouch()
+//    }
+    func setImproperlyClosedToN(){
+        let improperlyClosedDB = Database.database().reference().child("Users").child(modUserName3)
+        
+        improperlyClosedDB.updateChildValues(["ImproperlyClosed": "N"]){
+            (error,reference) in
+            if error != nil{
+                print(error!)
+            } else {
+                print("Message saved successfully!")
+                
+            }
+            
+        }
+    }
     func startOver(){
         counter = 0
         correctAnswers = 0
@@ -155,6 +218,8 @@ class ViewController: UIViewController {
     }
     
     func checkAnswer(){
+        //MARK: - Add
+        stopTimerTouch()
         answerUser = (answerTxt.text! as NSString).integerValue
         answerCorrect = randomNumA + randomNumB + randomNumC
         
