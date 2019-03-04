@@ -34,16 +34,17 @@ class ViewController: UIViewController {
     var answerUser : Int = 0
     var questionNumber = 0
     var averageSecond = 0
-    //MARK: - Add 3
+    //MARK: - Add 5 and modify category
     var currentAvgTime = 0
     var modUserName3 = ""
     var timerTouch = Timer()
     let category = "1A1"
     var counterTouch = 0.0
+    let getBackToWorkArray = ["You know what your dad wants to hear!","Your dad is waiting!","Don't get penalize","Life is a race","Who is winning the race?","Guess what Lucas and Tony are doing?","I will tell your dad","Remember the story of the Turtle and Rabbit","Don't forget to love yourself"]
     
     let congratulateArray = ["Great Job", "Excellent", "Way to go", "Alright", "Right on", "Correct", "Well done", "Awesome","Give me a high five", "You are so smart"]
     let retryArray = ["Oooops", "Try again"]
-    let getBackToWorkArray = ["You know what your dad wants to hear!","Your dad is waiting!","Don't get penalize","Life is a race","Who is winning the race?","Guess what Lucas and Tony are doing?","I will tell your dad","Remember the story of the Turtle and Rabbit","Don't forget to love yourself"]
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,7 +62,6 @@ class ViewController: UIViewController {
     @IBAction func checkAnswerByUser(_ sender: Any) {
         checkAnswer()
     }
-    //MARK: - Get userName
     func getUserName(){
 
         let userName = Auth.auth().currentUser?.email as! String
@@ -72,25 +72,19 @@ class ViewController: UIViewController {
     func askQuestion(){
         //TODO: Stop the timer when the user is done with the 5th question.
         
-        if correctAnswers == 2{
-            //MARK: - Replace questionNumber with correctAnswers
+        if correctAnswers == 5{
             averageSecond = Int(counter)/correctAnswers
             timer.invalidate()
             timerTouch.invalidate()
             stopTimer()
-            //MARK: - Replace updateAvgTime with getAvgTimeFromDB
             compareTime()
 
         } else {
         
         //3 digit questions starting at 100
-//        randomNumA = Int.random(in: 100 ..< 1001)
-//        randomNumB = Int.random(in: 100 ..< 1001)
-//        randomNumC = Int.random(in: 100 ..< 1001)
-        
-        randomNumA = Int.random(in: 1 ..< 11)
-        randomNumB = Int.random(in: 1 ..< 11)
-        randomNumC = Int.random(in: 1 ..< 11)
+        randomNumA = Int.random(in: 100 ..< 1001)
+        randomNumB = Int.random(in: 100 ..< 1001)
+        randomNumC = Int.random(in: 100 ..< 1001)
             
         questionLabel.text = "\(randomNumA) + \(randomNumB) + \(randomNumC)"
         questionNumber += 1
@@ -135,7 +129,6 @@ class ViewController: UIViewController {
         }
     }
     func updateDB(){
-        //MARK: - Fix
         let refUserNameDB = Database.database().reference().child("Users").child(modUserName3).child(category)
         refUserNameDB.setValue(["AvgTime": averageSecond, "Date": getCurrentShortDate()]){
             (error,reference) in
@@ -147,18 +140,6 @@ class ViewController: UIViewController {
             }
         }
     }
-//    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        let touchCount = touches.count
-//        let touch = touches.first
-//        let tapCount = touch!.tapCount
-//
-//        //categoryTxt.text = "touchesEnded";
-//        //timeTxt.text = "\(touchCount) touches"
-//        //userNameTxt.text = "\(tapCount) taps"
-//        print("stopped touching")
-//
-//        startTimerTouch()
-//    }
     func startTimerTouch(){
         counterTouch = 0
         //userNameTxt.text = "\(counter)"
@@ -179,17 +160,6 @@ class ViewController: UIViewController {
         let randomPickWork = Int(arc4random_uniform(8))
         readMe(myText: getBackToWorkArray[randomPickWork])
     }
-//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        let touchCount = touches.count
-//        let touch = touches.first
-//        let tapCount = touch!.tapCount
-//
-//       // categoryTxt.text = "touchesBegan"
-//        //timeTxt.text = "\(touchCount) touches"
-//        //userNameTxt.text = "\(tapCount) taps"
-//        print("start touching")
-//        stopTimerTouch()
-//    }
     func setImproperlyClosedToN(){
         let improperlyClosedDB = Database.database().reference().child("Users").child(modUserName3)
         
